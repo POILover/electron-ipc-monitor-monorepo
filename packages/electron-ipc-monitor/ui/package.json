@@ -1,0 +1,31 @@
+{
+  "name": "electron-ipc-monitor-ui",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Vue.js UI for Electron IPC Monitor",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "build:npm": "cross-env NPM_BUILD=true vue-tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "normalize.css": "^8.0.1",
+    "vue": "^3.5.18",
+    "vue-json-pretty": "^2.5.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^24.2.0",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "@vue/tsconfig": "^0.7.0",
+    "cross-env": "^10.0.0",
+    "fs-extra": "^11.3.1",
+    "rimraf": "^6.0.1",
+    "sass": "^1.90.0",
+    "typescript": "~5.8.3",
+    "vite": "^7.1.0",
+    "vue-tsc": "^3.0.5"
+  }
+}

@@ -1,0 +1,11 @@
+node_modules
+dist
+dist_*
+out
+.DS_Store
+.eslintcache
+*.log*
+package-lock.json
+electron.vite.config.*.mjs
+.npmrc
+.pnpmrc

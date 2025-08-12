@@ -1,0 +1,30 @@
+{
+  "name": "electron-ipc-monitor-monorepo",
+  "version": "1.0.0",
+  "description": "A monorepo project for the development of the electron-ipc-monitor.",
+  "private": true,
+  "scripts": {
+    "build:main": "pnpm --filter=electron-ipc-monitor build:main",
+    "build:npm": "pnpm --filter=electron-ipc-monitor build:npm",
+    "dev:monitor": "pnpm --filter=electron-ipc-monitor dev",
+    "dev:demo": "pnpm --filter=demo-app dev"
+  },
+  "keywords": [
+    "electron",
+    "ipc",
+    "monitor",
+    "monorepo"
+  ],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.12.1",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "electron",
+      "esbuild"
+    ]
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}
