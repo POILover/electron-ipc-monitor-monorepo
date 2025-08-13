@@ -76,5 +76,9 @@ pnpm run build:npm
 
 ## TODO
 
+- [x] 多窗口demo
+- [ ] 区分多窗口的title
 - [ ] 添加语言切换
-- [ ] 添加自定义快捷键
+- [ ] UI添加设置 - 语言、清除
+- [ ] 添加自定义配置 - 快捷键、默认语言
+- [ ] load自定义monitor window
