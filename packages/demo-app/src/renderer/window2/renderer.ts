@@ -7,9 +7,7 @@ function init(): void {
       const randomIpcChannelLength = randomIpcChannels.length
       const randomIndex = Math.floor(Math.random() * randomIpcChannelLength)
       const channel = randomIpcChannels[randomIndex]
-      window.api[channel]().then((result) => {
-        console.log('Random IPC Result:', result)
-      })
+      window.api[channel]()
     })
   })
 }

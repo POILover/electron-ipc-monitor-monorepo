@@ -2,15 +2,21 @@ import { app, globalShortcut, ipcMain, BrowserWindow, IpcMainInvokeEvent } from 
 import { performance as perfHooksPerformance } from 'perf_hooks';
 import path from 'path'
 const polyfill_perf = polyfillPerformance();
-const shortcut = 'CmdOrCtrl+Shift+M'
-export default class IpcMonitor {
+const DEFAULT_SHORTCUT = 'CmdOrCtrl+Shift+M'
+class IpcMonitor {
   private static instance: IpcMonitor;
   private initialId = 0
   private monitorWindowMap = new Map<number, BrowserWindow>()
   private originalHandle = ipcMain.handle.bind(ipcMain)
+  private shortcut = DEFAULT_SHORTCUT
 
-  constructor() {
+  constructor({ shortcut = DEFAULT_SHORTCUT } = {}) {
+    if (IpcMonitor.instance) {
+      throw new Error("IpcMonitor instance already exists")
+    }
+    this.shortcut = shortcut
     this.setupWindowLifecycle()
+    IpcMonitor.instance = this;
   }
 
   private setupWindowLifecycle() {
@@ -18,13 +24,13 @@ export default class IpcMonitor {
       const id = win.id
       win.on('focus', () => {
         const isMonitorWindow = [...this.monitorWindowMap.values()].includes(win)
-        if(!isMonitorWindow){
-          globalShortcut.register(shortcut, () => {
+        if (!isMonitorWindow) {
+          globalShortcut.register(this.shortcut, () => {
             const hasMonitorWindow = this.monitorWindowMap.has(id) // it should define in here
-            if(hasMonitorWindow){
+            if (hasMonitorWindow) {
               const monitorWindow = this.monitorWindowMap.get(id)
               monitorWindow?.close()
-            }else{
+            } else {
               const monitorWindow = createMonitorWindow()
               this.monitorWindowMap.set(id, monitorWindow)
               monitorWindow.on('closed', () => {
@@ -38,7 +44,7 @@ export default class IpcMonitor {
       win.on('blur', () => {
         const isMonitorWindow = [...this.monitorWindowMap.values()].includes(win)
         if (!isMonitorWindow) {
-          globalShortcut.unregister(shortcut)
+          globalShortcut.unregister(this.shortcut)
         }
       })
 
@@ -47,10 +53,10 @@ export default class IpcMonitor {
         if (!isMonitorWindow) {
           const monitorWindow = this.monitorWindowMap.get(id)
           monitorWindow?.close()
-          globalShortcut.unregister(shortcut)
+          globalShortcut.unregister(this.shortcut)
         }
       })
-      
+
     })
   }
 
@@ -58,7 +64,7 @@ export default class IpcMonitor {
     return Date.now().toString() + '-' + this.initialId++
   }
 
-  public wrapIpc() {
+  public ipcMonitorHandle() {
     const self = this
     return function (
       channel: string,
@@ -86,15 +92,7 @@ export default class IpcMonitor {
       self.originalHandle(channel, wrappedListener)
     }
   }
-  static getInstance(): IpcMonitor {
-    if (!IpcMonitor.instance) {
-      IpcMonitor.instance = new IpcMonitor();
-    }
-    return IpcMonitor.instance;
-  }
 }
-export const ipcMonitor = IpcMonitor.getInstance()
-export const ipcMonitorHandle = ipcMonitor.wrapIpc()
 
 function createMonitorWindow() {
   const monitorWindow = new BrowserWindow({
@@ -125,4 +123,9 @@ function polyfillPerformance() {
     return globalThis.performance;
   }
   return perfHooksPerformance;
+}
+
+export default function useIpcMonitor(option?: any) {
+  const ipcMonitor = new IpcMonitor(option);
+  return ipcMonitor.ipcMonitorHandle();
 }

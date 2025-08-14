@@ -1,10 +1,9 @@
-import { ipcMonitorHandle } from "electron-ipc-monitor";
+import { ipcMain } from "electron";
 import { randomIpcChannels } from "../../shared";
 import { randomPromise } from "./random-promise";
 export function generateRandomIpc() {
-  console.log(randomIpcChannels)
   randomIpcChannels.forEach(channel => {
-    ipcMonitorHandle(channel, async () => {
+    ipcMain.handle(channel, async () => {
       return await randomPromise()
     })
   })

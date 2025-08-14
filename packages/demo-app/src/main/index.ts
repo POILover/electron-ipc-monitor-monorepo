@@ -1,8 +1,9 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, ipcMain } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import { generateRandomIpc } from './utils/random-ipc'
 import { createWindow } from './utils/create-window'
-
+import { useIpcMonitor } from 'electron-ipc-monitor'
+ipcMain.handle = useIpcMonitor()
 // 使用监控的IPC处理器替代原生的ipcMain.handle
 generateRandomIpc()
 
