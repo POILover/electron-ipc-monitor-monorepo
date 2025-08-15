@@ -3,6 +3,7 @@
 declare global {
   interface Window {
     electron: any
+    monitorApi: any
   }
 }
 

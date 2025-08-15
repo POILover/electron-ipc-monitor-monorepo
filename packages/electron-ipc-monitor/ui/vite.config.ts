@@ -13,7 +13,7 @@ export default defineConfig({
       closeBundle() {
         if (process.env.NPM_BUILD !== 'true') return;
         const distPath = path.resolve(__dirname, './dist');
-        const uiPath = path.resolve(__dirname, '../dist_npm/ui');
+        const uiPath = path.resolve(__dirname, '../dist_npm/dist/ui');
         fs.copySync(distPath, uiPath);
       }
     }

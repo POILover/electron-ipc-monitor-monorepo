@@ -67,14 +67,20 @@ class IpcMonitor {
   private createMonitorWindow(parentWindow: BrowserWindow) {
     const parentWindowTitle = parentWindow.getTitle()
     let monitorWindowTitle = parentWindowTitle ? `Monitor Window $ - ${parentWindowTitle}` : ``
+    let preloadPath;
+    if(process.env.MONITOR_UI_DEV_URL){
+      preloadPath = path.join(__dirname, 'preload.js')
+    }else{
+      const moduleRoot = path.dirname(require.resolve('electron-ipc-monitor')) // module root is based on exports option of package.json
+      preloadPath = path.resolve(moduleRoot, 'preload.js')
+    }
     const monitorWindow = new BrowserWindow({
       title: monitorWindowTitle,
       width: 1200,
       height: 800,
       autoHideMenuBar: true,
       webPreferences: {
-        nodeIntegration: true,
-        contextIsolation: false
+        preload: preloadPath
       }
     })
     monitorWindowTitle = monitorWindowTitle.replace(`Monitor Window $`, `Monitor Window $${monitorWindow.id}`)

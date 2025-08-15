@@ -157,6 +157,7 @@ const getRowClass = (log: any, index: number) => {
 };
 
 onMounted(() => {
+  console.log(window.monitorApi)
   require('electron').ipcRenderer.on('monitor:data', (_, data) => {
     
       if (data.status === 'pending') {
