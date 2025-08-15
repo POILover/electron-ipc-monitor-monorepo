@@ -1,2 +1,4 @@
 packages:
-  - 'packages/**'
+  - 'packages/demo-app'
+  - 'packages/electron-ipc-monitor'
+  - 'packages/electron-ipc-monitor/ui'
