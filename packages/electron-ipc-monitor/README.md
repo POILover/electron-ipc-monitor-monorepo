@@ -25,6 +25,5 @@ tsc(main) -> dist_main
 babel(dist_main) -> dist_npm/esm + dist_npm/cjs
 
 build(ui) -> ui/dist
-copySync(ui/dist) -> dist_npm/esm/ui
-copySync(ui/dist) -> dist_npm/cjs/ui
+copySync(ui/dist) -> dist_npm/ui
 ```

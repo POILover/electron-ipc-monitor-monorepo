@@ -13,10 +13,8 @@ export default defineConfig({
       closeBundle() {
         if (process.env.NPM_BUILD !== 'true') return;
         const distPath = path.resolve(__dirname, './dist');
-        const esmPath = path.resolve(__dirname, '../dist_npm/esm/ui');
-        const cjsPath = path.resolve(__dirname, '../dist_npm/cjs/ui');
-        fs.copySync(distPath, esmPath);
-        fs.copySync(distPath, cjsPath);
+        const uiPath = path.resolve(__dirname, '../dist_npm/ui');
+        fs.copySync(distPath, uiPath);
       }
     }
   ],

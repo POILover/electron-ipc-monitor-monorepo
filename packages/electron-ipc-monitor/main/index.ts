@@ -1,20 +1,23 @@
 import { app, globalShortcut, ipcMain, BrowserWindow, IpcMainInvokeEvent } from 'electron'
 import { performance as perfHooksPerformance } from 'perf_hooks';
 import path from 'path'
+import { MonitorOptions, MonitorOptionsResolved } from './types';
 const polyfill_perf = polyfillPerformance();
-const DEFAULT_SHORTCUT = 'CmdOrCtrl+Shift+M'
+const DEFAULT_OPTIONS: MonitorOptionsResolved = {
+  shortcut: 'CmdOrCtrl+Shift+M',
+  language: 'zh'
+}
 class IpcMonitor {
   private static instance: IpcMonitor;
   private initialId = 0
   private monitorWindowMap = new Map<number, BrowserWindow>()
   private originalHandle = ipcMain.handle.bind(ipcMain)
-  private shortcut = DEFAULT_SHORTCUT
-
-  constructor({ shortcut = DEFAULT_SHORTCUT } = {}) {
+  private options: MonitorOptionsResolved
+  constructor(options?: MonitorOptions) {
+    this.options = { ...DEFAULT_OPTIONS, ...options }
     if (IpcMonitor.instance) {
       throw new Error("IpcMonitor instance already exists")
     }
-    this.shortcut = shortcut
     this.setupWindowLifecycle()
     IpcMonitor.instance = this;
   }
@@ -23,15 +26,13 @@ class IpcMonitor {
     app.on('browser-window-created', (_, win) => {
       const id = win.id
       win.on('focus', () => {
-        const isMonitorWindow = [...this.monitorWindowMap.values()].includes(win)
-        if (!isMonitorWindow) {
-          globalShortcut.register(this.shortcut, () => {
-            const hasMonitorWindow = this.monitorWindowMap.has(id) // it should define in here
-            if (hasMonitorWindow) {
+        if (!this.isMonitorWindow(win)) {
+          globalShortcut.register(this.options.shortcut, () => {
+            if (this.hasMonitorWindow(win)) {
               const monitorWindow = this.monitorWindowMap.get(id)
               monitorWindow?.close()
             } else {
-              const monitorWindow = createMonitorWindow()
+              const monitorWindow = this.createMonitorWindow(win)
               this.monitorWindowMap.set(id, monitorWindow)
               monitorWindow.on('closed', () => {
                 this.monitorWindowMap.delete(id)
@@ -42,22 +43,73 @@ class IpcMonitor {
       })
 
       win.on('blur', () => {
-        const isMonitorWindow = [...this.monitorWindowMap.values()].includes(win)
-        if (!isMonitorWindow) {
-          globalShortcut.unregister(this.shortcut)
+        if (!this.isMonitorWindow(win)) {
+          globalShortcut.unregister(this.options.shortcut)
         }
       })
 
       win.on('closed', () => {
-        const isMonitorWindow = [...this.monitorWindowMap.values()].includes(win)
-        if (!isMonitorWindow) {
+        if (!this.isMonitorWindow(win)) {
           const monitorWindow = this.monitorWindowMap.get(id)
           monitorWindow?.close()
-          globalShortcut.unregister(this.shortcut)
+          globalShortcut.unregister(this.options.shortcut)
         }
       })
 
     })
+  }
+  private isMonitorWindow(window: BrowserWindow) {
+    return [...this.monitorWindowMap.values()].includes(window);
+  }
+  private hasMonitorWindow(window: BrowserWindow) {
+    return this.monitorWindowMap.has(window.id);
+  }
+  private createMonitorWindow(parentWindow: BrowserWindow) {
+    const parentWindowTitle = parentWindow.getTitle()
+    let monitorWindowTitle = parentWindowTitle ? `Monitor Window $ - ${parentWindowTitle}` : ``
+    const monitorWindow = new BrowserWindow({
+      title: monitorWindowTitle,
+      width: 1200,
+      height: 800,
+      autoHideMenuBar: true,
+      webPreferences: {
+        nodeIntegration: true,
+        contextIsolation: false
+      }
+    })
+    monitorWindowTitle = monitorWindowTitle.replace(`Monitor Window $`, `Monitor Window $${monitorWindow.id}`)
+    monitorWindow.setTitle(monitorWindowTitle)
+    const language = this.options.language
+    const query = `?lang=${language}`
+    if (process.env.MONITOR_UI_DEV_URL) {
+      console.log(`Loading monitor UI from: ${process.env.MONITOR_UI_DEV_URL}`)
+      monitorWindow.loadURL(`${process.env.MONITOR_UI_DEV_URL}${query}`)
+    } else {
+      /* 
+        npm package directory structure
+        ├── dist/
+        │   ├── cjs/
+        │   │   └── index.js
+        │   ├── esm/
+        │   │   └── index.js
+        │   └── ui/
+        │       └── index.html
+        
+        npm.package.exports
+          {
+            ".": {
+              "require": "./dist/cjs/index.js",
+              "import": "./dist/esm/index.js"
+            }
+          }
+      */
+      const moduleRoot = path.dirname(require.resolve('electron-ipc-monitor')) // module root is based on exports option of package.json
+      const uiDistPath = path.resolve(moduleRoot, '../ui/index.html') // __dirname has undefined behavior in electron context
+      monitorWindow.loadURL(`file://${uiDistPath}${query}`).catch((err) => {
+        console.error('Failed to load monitor UI:', err)
+      })
+    }
+    return monitorWindow;
   }
 
   private generateIpcId() {
@@ -94,30 +146,6 @@ class IpcMonitor {
   }
 }
 
-function createMonitorWindow() {
-  const monitorWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
-    autoHideMenuBar: true,
-    webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false
-    }
-  })
-
-  if (process.env.MONITOR_UI_DEV_URL) {
-    console.log(`Loading monitor UI from: ${process.env.MONITOR_UI_DEV_URL}`)
-    monitorWindow.loadURL(`${process.env.MONITOR_UI_DEV_URL}`)
-  } else {
-    const moduleRoot = path.dirname(require.resolve('electron-ipc-monitor'))
-    const uiDistPath = path.resolve(moduleRoot, 'ui/index.html')
-    monitorWindow.loadFile(uiDistPath).catch((err) => {
-      console.error('Failed to load monitor UI:', err)
-    })
-  }
-  return monitorWindow;
-}
-
 function polyfillPerformance() {
   if (typeof globalThis.performance !== 'undefined') {
     return globalThis.performance;
@@ -125,7 +153,7 @@ function polyfillPerformance() {
   return perfHooksPerformance;
 }
 
-export default function useIpcMonitor(option?: any) {
+export const useIpcMonitor = (option?: MonitorOptions) => {
   const ipcMonitor = new IpcMonitor(option);
   return ipcMonitor.ipcMonitorHandle();
 }

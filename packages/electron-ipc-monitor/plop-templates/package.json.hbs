@@ -1,0 +1,21 @@
+{
+  "name": "electron-ipc-monitor",
+  "version": "{{version}}",
+  "description": "Intercept and visualize `ipcMain.handle` calls, similar to the Network tab in browser DevTools.",
+  "main": "index.js",
+  "keywords": ["electron", "ipc", "monitor"],
+  "author": "wanglianjie <geetime0303@gmail.com>",
+  "exports": {
+    ".": {
+      "require": "./dist/cjs/index.js",
+      "import": "./dist/esm/index.js"
+    }
+  },
+  "peerDependencies": {
+    "electron": ">=9.0.0"
+  },
+  "engines": {
+    "node": ">=12"
+  },
+  "license": "MIT"
+}
