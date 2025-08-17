@@ -8,7 +8,8 @@
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
     "build:npm": "vue-tsc -b && cross-env NPM_BUILD=true vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "clean": "rimraf dist"
   },
   "dependencies": {
     "normalize.css": "^8.0.1",

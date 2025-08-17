@@ -140,7 +140,7 @@ const formatPerf = (log: any) => {
 const getStatusText = (status: string) => {
   const statusMap: Record<string, string> = {
     'pending': '进行中',
-    'fullfilled': '已完成',
+    'fulfilled': '已完成',
     'rejected': '已失败'
   };
   return statusMap[status] || status;
@@ -156,34 +156,31 @@ const getRowClass = (log: any, index: number) => {
   return `${baseClass} ${selectedClass}`.trim();
 };
 
-onMounted(() => {
-  console.log(window.monitorApi)
-  require('electron').ipcRenderer.on('monitor:data', (_, data) => {
-    
-      if (data.status === 'pending') {
-        data.startTime = Date.now() // 记录实际开始时间
-        monitorLogs.value.push(data)
-        scrollToBottom()
-      }
-      if (data.status === 'fullfilled') {
-        const index = monitorLogs.value.findIndex(item => item.id === data.id)
-        const pendingData = { ...monitorLogs.value[index] }
-        if (index !== -1) {
-          data.startTime = pendingData.startTime
-          data.perf = data.perf - pendingData.perf // 计算耗时
-          monitorLogs.value[index] = data
-        }
-      }
-      if (data.status === 'rejected') {
-        const index = monitorLogs.value.findIndex(item => item.id === data.id)
-        if (index !== -1) {
-          const pendingData = { ...monitorLogs.value[index] }
-          data.startTime = pendingData.startTime
-          data.perf = data.perf - pendingData.perf
-          monitorLogs.value[index] = data
-        }
-      }
-    })
+onMounted(async () => {
+  const data = await window.monitorApi.getMonitorData();
+  if (data.status === 'pending') {
+    data.startTime = Date.now() // 记录实际开始时间
+    monitorLogs.value.push(data)
+    scrollToBottom()
+  }
+  if (data.status === 'fulfilled') {
+    const index = monitorLogs.value.findIndex(item => item.id === data.id)
+    const pendingData = { ...monitorLogs.value[index] }
+    if (index !== -1) {
+      data.startTime = pendingData.startTime
+      data.perf = data.perf - pendingData.perf // 计算耗时
+      monitorLogs.value[index] = data
+    }
+  }
+  if (data.status === 'rejected') {
+    const index = monitorLogs.value.findIndex(item => item.id === data.id)
+    if (index !== -1) {
+      const pendingData = { ...monitorLogs.value[index] }
+      data.startTime = pendingData.startTime
+      data.perf = data.perf - pendingData.perf
+      monitorLogs.value[index] = data
+    }
+  }
 });
 </script>
 
@@ -489,7 +486,7 @@ $error-bg: #d63031;
     color: $error-color;
   }
 
-  &-fullfilled {
+  &-fulfilled {
     background: linear-gradient(135deg, $success-color, $success-bg);
     color: $white;
   }
@@ -507,7 +504,7 @@ $error-bg: #d63031;
     border-left: 4px solid $pending-color;
   }
 
-  &-fullfilled {
+  &-fulfilled {
     background: rgba($success-color, 0.1);
     border-left: 4px solid $success-color;
   }

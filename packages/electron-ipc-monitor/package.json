@@ -9,7 +9,7 @@
     "ui/dist"
   ],
   "scripts": {
-    "build:npm": "rimraf dist_npm && rimraf dist_main && pnpm build:main && pnpm babel:main && pnpm build:ui:npm && pnpm plop",
+    "build:npm": "rimraf dist_npm && rimraf dist_main && pnpm build:main && pnpm babel:main && pnpm build:ui:npm && pnpm plop && pnpm npm:pack",
     "build:ui:npm": "cd ui && pnpm build:npm",
     "build:main": "tsc --outDir dist_main",
     "build:main:watch": "tsc --outDir dist_main --watch",
@@ -19,7 +19,9 @@
     "babel:cjs": "babel dist_main --out-dir dist_npm/dist/cjs --env-name cjs",
     "babel:esm": "babel dist_main --out-dir dist_npm/dist/esm --env-name esm",
     "babel:main": "pnpm babel:cjs && pnpm babel:esm",
-    "plop": "plop"
+    "plop": "plop",
+    "npm:pack": "cd dist_npm && pnpm pack",
+    "clean": "rimraf dist dist_npm dist_main"
   },
   "devDependencies": {
     "@babel/cli": "^7.28.0",

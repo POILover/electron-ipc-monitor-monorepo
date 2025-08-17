@@ -7,7 +7,10 @@
     "build:main": "pnpm --filter=electron-ipc-monitor build:main",
     "build:npm": "pnpm --filter=electron-ipc-monitor build:npm",
     "dev:monitor": "pnpm --filter=electron-ipc-monitor dev",
-    "dev:demo": "pnpm --filter=demo-app dev"
+    "dev:demo": "pnpm --filter=demo-app dev",
+    "clean": "rimraf pnpm-lock.yaml node_modules",
+    "clean:all": "pnpm -r clean && rimraf --glob **/*/node_modules && pnpm clean",
+    "dev:test": "cd packages/electron-ipc-monitor/test && npm --ignore-workspace install && npm run dev"
   },
   "keywords": [
     "electron",
@@ -25,6 +28,7 @@
     ]
   },
   "devDependencies": {
+    "rimraf": "^6.0.1",
     "typescript": "^5.8.3"
   }
 }

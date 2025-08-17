@@ -72,7 +72,7 @@ class IpcMonitor {
       preloadPath = path.join(__dirname, 'preload.js')
     }else{
       const moduleRoot = path.dirname(require.resolve('electron-ipc-monitor')) // module root is based on exports option of package.json
-      preloadPath = path.resolve(moduleRoot, 'preload.js')
+      preloadPath = path.resolve(moduleRoot, './main/preload.js')
     }
     const monitorWindow = new BrowserWindow({
       title: monitorWindowTitle,
@@ -80,7 +80,12 @@ class IpcMonitor {
       height: 800,
       autoHideMenuBar: true,
       webPreferences: {
-        preload: preloadPath
+        preload: preloadPath,
+        nodeIntegration: false,
+        contextIsolation: true,
+        // @ts-ignore
+        // compatibility with lower electron versions
+        worldSafeExecuteJavaScript: true
       }
     })
     monitorWindowTitle = monitorWindowTitle.replace(`Monitor Window $`, `Monitor Window $${monitorWindow.id}`)
@@ -137,7 +142,7 @@ class IpcMonitor {
           wc.send('monitor:data', { id, channel, status: 'pending', args, perf: polyfill_perf.now() })
           try {
             result = await listener(event, ...args)
-            wc.send('monitor:data', { id, channel, status: 'fullfilled', args, perf: polyfill_perf.now(), result })
+            wc.send('monitor:data', { id, channel, status: 'fulfilled', args, perf: polyfill_perf.now(), result })
           } catch (error) {
             wc.send('monitor:data', { id, channel, status: 'rejected', args, perf: polyfill_perf.now(), result: error })
           }
