@@ -68,9 +68,9 @@ class IpcMonitor {
     const parentWindowTitle = parentWindow.getTitle()
     let monitorWindowTitle = parentWindowTitle ? `Monitor Window $ - ${parentWindowTitle}` : ``
     let preloadPath;
-    if(process.env.MONITOR_UI_DEV_URL){
+    if (process.env.MONITOR_UI_DEV_URL) {
       preloadPath = path.join(__dirname, 'preload.js')
-    }else{
+    } else {
       const moduleRoot = path.dirname(require.resolve('electron-ipc-monitor')) // module root is based on exports option of package.json
       preloadPath = path.resolve(moduleRoot, './main/preload.js')
     }
@@ -138,6 +138,7 @@ class IpcMonitor {
         const wc = self.monitorWindowMap.get(parentWindowId)?.webContents
         let result: any
         if (wc) {
+          console.log('send')
           const id = self.generateIpcId();
           wc.send('monitor:data', { id, channel, status: 'pending', args, perf: polyfill_perf.now() })
           try {

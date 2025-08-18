@@ -1,11 +1,9 @@
 import { contextBridge, ipcRenderer } from 'electron'
 // Custom APIs for renderer
 const monitorApi = {
-  getMonitorData: () => {
-    return new Promise(resolve => {
-      ipcRenderer.on('monitor-data', (_, data) => {
-        resolve(data)
-      })
+  getMonitorData: (cb: any) => {
+    ipcRenderer.on('monitor:data', (_, data) => {
+      cb(data)
     })
   },
 }
@@ -15,12 +13,10 @@ const monitorApi = {
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('monitorApi', monitorApi)
-    console.log('A???')
   } catch (error) {
     console.error(error)
   }
 } else {
-  console.log('B???')
   // @ts-ignore (define in dts)
   window.monitorApi = monitorApi
 }
