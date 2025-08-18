@@ -138,7 +138,6 @@ class IpcMonitor {
         const wc = self.monitorWindowMap.get(parentWindowId)?.webContents
         let result: any
         if (wc) {
-          console.log('send')
           const id = self.generateIpcId();
           wc.send('monitor:data', { id, channel, status: 'pending', args, perf: polyfill_perf.now() })
           try {
