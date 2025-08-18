@@ -138,10 +138,11 @@ const formatPerf = (log: any) => {
 };
 
 const getStatusText = (status: string) => {
+  // TODO: i18n
   const statusMap: Record<string, string> = {
-    'pending': '进行中',
-    'fulfilled': '已完成',
-    'rejected': '已失败'
+    'pending': 'pending',
+    'fulfilled': 'success',
+    'rejected': 'failed'
   };
   return statusMap[status] || status;
 };

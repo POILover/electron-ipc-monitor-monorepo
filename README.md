@@ -36,26 +36,19 @@
 pnpm install
 ```
 
-### 2. 构建 monitor/main 模块
-
-每次修改main.ts文件都要重新执行这个打包指令，并重启项目，类似electron项目的主进程修改
-```bash
-pnpm run build:main
-```
-
-### 3. 启动监控 UI 开发服务
+### 2. 启动`插件热更新服务`和`UI开发服务`
 
 ```bash
 pnpm run dev:monitor
 ```
 
-### 4. 启动示例应用开发服务
+### 3. 启动示例应用开发服务
 
 ```bash
 pnpm run dev:demo
 ```
 
-### 5. 生成npm产物
+### 4. 生成npm产物
 
 ```bash
 pnpm run build:npm
@@ -77,8 +70,9 @@ pnpm run build:npm
 ## TODO
 
 - [x] 多窗口demo
-- [ ] 区分多窗口的title
+- [x] 区分多窗口的title
 - [ ] 添加语言切换
 - [ ] UI添加设置 - 语言、清除
 - [ ] 添加自定义配置 - 快捷键、默认语言
 - [ ] load自定义monitor window
+- [ ] 维护类型

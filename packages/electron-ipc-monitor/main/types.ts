@@ -8,12 +8,12 @@ export interface IpcMonitorData {
   error?: any
 }
 
-export interface MonitorOptionsResolved {
-  shortcut: Electron.Accelerator
-  language: string
+export interface MonitorOptions {
+  shortcut?: Electron.Accelerator
+  language?: 'zh' | 'en'
 }
 
-export type MonitorOptions = Partial<MonitorOptionsResolved>
+export type MonitorOptionsResolved = Required<MonitorOptions>
 
 export interface MonitorWindow {
   id: number

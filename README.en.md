@@ -36,27 +36,19 @@ At the project root:
 pnpm install
 ```
 
-### 2. Build monitor/main module
-
-You need to re-execute this build command every time you modify the main.ts file and restart the project, similar to modifying the main process in an Electron project.
-
-```bash
-pnpm run build:main
-```
-
-### 3. Start monitor UI development server
+### 2. Start plugin hot-reload service and UI dev server
 
 ```bash
 pnpm run dev:monitor
 ```
 
-### 4. Start demo app development server
+### 3. Start demo app development server
 
 ```bash
 pnpm run dev:demo
 ```
 
-### 5. Generate npm artifacts
+### 4. Generate npm artifacts
 
 ```bash
 pnpm run build:npm
@@ -76,5 +68,10 @@ pnpm run build:npm
 - `demo-app`: Example Electron app with monitoring integration
 
 ## TODO
+- [x] Multi-window demo
+- [x] Distinguish titles for multiple windows
 - [ ] Add language switching
-- [ ] Add custom shortcut keys
+- [ ] UI: add Settings (language, clear)
+- [ ] Add customizable options (shortcut, default language)
+- [ ] Load custom monitor window
+- [ ] Maintain types
