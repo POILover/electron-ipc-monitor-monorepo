@@ -1,39 +1,40 @@
-
 # electron-ipc-monitor
 
-`electron-ipc-monitor` 是为 Electron 应用设计的 IPC 监控与可视化工具。它可拦截并展示 `ipcMain.handle` 调用，类似于浏览器 DevTools 的 Network 面板，帮助开发者调试和分析主进程与渲染进程间的通信。
+`electron-ipc-monitor` is an IPC monitoring and visualization tool designed for Electron applications. It intercepts and displays `ipcMain.handle` calls, similar to the Network panel in browser DevTools, helping developers debug and analyze communication between the main and renderer processes.
 
 
-## 安装
+## Installation
 
 ```sh
 npm install electron-ipc-monitor --save-dev
 ```
 
 
-## 使用方法
+## Usage
+
+Use it in the main process entry:
 
 ### ESModule
 ```js
-import { ipcMonitorHandle } from 'electron-ipc-monitor';
+import { useIpcMonitor } from 'electron-ipc-monitor'
+ipcMain.handle = useIpcMonitor()
 ```
 
 ### CommonJS
 ```js
-const { ipcMonitorHandle } = require('electron-ipc-monitor');
+const { useIpcMonitor } = require('electron-ipc-monitor')
+ipcMain.handle = useIpcMonitor()
 ```
 
-你可以像使用 `ipcMain.handle` 一样使用 `ipcMonitorHandle` 拦截指定通道，也可以在主进程入口文件中通过 `ipcMain.handle = ipcMonitorHandle` 全局拦截所有通道。
-
-Electron 项目运行后，按下以下快捷键即可打开 IPC 监控窗口：
+After the Electron app is running, press the following shortcut to open the IPC monitor window:
 
 - Windows: `Ctrl + Shift + M`
-- Mac: `Command + Shift + M`
+- macOS: `Command + Shift + M`
 
 
-## 更多信息
+## More Information
 
-详细用法和开发文档请访问：[electron-ipc-monitor-monorepo 仓库](https://github.com/POILover/electron-ipc-monitor-monorepo)
+For detailed usage and development docs, visit: [electron-ipc-monitor-monorepo repository](https://github.com/POILover/electron-ipc-monitor-monorepo)
 
 ## License
 
