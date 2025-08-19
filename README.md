@@ -6,6 +6,8 @@
 
 `electron-ipc-monitor` 是一个用于 Electron 项目开发时的 IPC 通信监控与可视化的工具，能够拦截并展示 `ipcMain.handle` 的调用情况，类似于浏览器 DevTools 的 Network 面板。
 
+![示例](./docs/imgs/monitor.gif)
+
 ## 注意
 
 虽然 `electron-ipc-monitor` 最终产物需求依赖版本很低，但该项目为个人开发使用，各个依赖版本偏高，请酌情食用。

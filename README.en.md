@@ -6,6 +6,8 @@ This project is for the development of the `electron-ipc-monitor` plugin, which 
 
 `electron-ipc-monitor` is an IPC monitoring and visualization tool for Electron project development. It intercepts and displays `ipcMain.handle` calls, similar to the Network tab in browser DevTools.
 
+![Screenshot](./docs/imgs/monitor.gif)
+
 ## Notice
 
 Although the final `electron-ipc-monitor` product has low dependency version requirements, this project is for personal development use with relatively high dependency versions. Please use it at your discretion.
