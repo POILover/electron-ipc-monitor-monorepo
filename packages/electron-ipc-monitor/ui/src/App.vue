@@ -29,8 +29,8 @@
       <!-- 右侧面板 -->
       <div class="details-panel" v-if="isPanelOpen">
         <div class="panel-header">
-          <div class="close-btn" @click="closePanel">×</div>
-          <h3>{{ selectedLog?.channel }}</h3>
+          <span class="close-btn" @click="closePanel">×</span>
+          <span>{{ selectedLog?.channel }}</span>
         </div>
         <div class="panel-tabs">
           <button 
@@ -277,39 +277,31 @@ $error-bg: #d63031;
 }
 
 .panel-header {
-  display: flex;
-  align-items: center;
   height: 34px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   gap: 10px;
+  padding: 0 4px;
+  display: flex;
+  align-items: center;
+  .close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #666;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
 
-  h3 {
-    margin: 0;
-    color: #333;
-    font-size: 14px;
-    font-weight: 600;
-    flex: 1;
+    &:hover {
+      background: rgba(0, 0, 0, 0.1);
+      color: #333;
+    }
   }
 }
 
-.close-btn {
-  font-size: 20px;
-  color: #666;
-  cursor: pointer;
-  // padding: 0;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  display: inline-block;
-  text-align: center;
-  line-height: 16px;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: rgba(0, 0, 0, 0.1);
-    color: #333;
-  }
-}
 
 .panel-tabs {
   display: flex;
@@ -481,7 +473,6 @@ $error-bg: #d63031;
   border-radius: 15px;
   font-size: 11px;
   font-weight: 600;
-  text-transform: uppercase;
   letter-spacing: 0.5px;
 
   &-pending {
